@@ -7,6 +7,7 @@
 //
 
 #import "NemoStatusPrompt.h"
+
 #define STATUS_SIZE CGSizeMake([UIScreen mainScreen].bounds.size.width, 64)
 #define CUSTOM_TAG 4UL<<4
 
@@ -16,12 +17,13 @@
 #define S_COLOR [UIColor colorWithRed:93./255.0f green:200./255.0f blue:0./255.0f alpha:1.]
 #define W_COLOR [UIColor colorWithRed:241./255.0f green:224./255.0f blue:0./255.0f alpha:1.]
 #define T_COLOR [UIColor whiteColor]
+
 static UIView *_statusBackgroundView = nil;
 static UILabel *_titleLabel = nil;
 static UIImageView *_promptImageView = nil;
 static BOOL _isShow = NO;
 static NSTimeInterval _hideTime = 1.5;
-
+static BOOL _userInteractionEnabled = YES;
 
 static NemoStatusPrompt *__Singleton__Prompt__ = nil;
 
@@ -124,6 +126,9 @@ static NemoStatusPrompt *__Singleton__Prompt__ = nil;
 }
 
 #pragma mark - configure
++ (void)userInteractionEnabledDuringAnimation:(BOOL)enable{
+    _userInteractionEnabled = enable;
+}
 + (void)setAutoHideTime:(NSTimeInterval)time{
 
     _hideTime = time;
@@ -151,7 +156,12 @@ static NemoStatusPrompt *__Singleton__Prompt__ = nil;
 //    [NSRunLoop cancelPreviousPerformRequestsWithTarget:self selector:@selector(delayHide:) object:nil];
     [NemoStatusPrompt cancelPreviousPerformRequestsWithTarget:__Singleton__Prompt__ selector:@selector(delayHide) object:nil];
 
+    if (!_userInteractionEnabled) {
+        [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
+    }else{
+        [[UIApplication sharedApplication] endIgnoringInteractionEvents];
 
+    }
     [[self getKeyWindow] setWindowLevel:UIWindowLevelStatusBar + 1];
     if (animation) {
         [UIView animateWithDuration:1.0
@@ -161,6 +171,8 @@ static NemoStatusPrompt *__Singleton__Prompt__ = nil;
                                 _statusBackgroundView.frame = CGRectMake(0, 0, STATUS_SIZE.width, STATUS_SIZE.height);
                             }
                          completion:^(BOOL finished) {
+                             [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+
                              if (completion) {
                                  completion(finished);
                              }
@@ -186,6 +198,8 @@ static NemoStatusPrompt *__Singleton__Prompt__ = nil;
         [__Singleton__Prompt__ performSelector:@selector(delayHide) withObject:nil afterDelay:_hideTime];
 
         _statusBackgroundView.frame = CGRectMake(0, 0, STATUS_SIZE.width, STATUS_SIZE.height);
+        [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+
         if (completion) {
             completion(YES);
         }
@@ -195,6 +209,7 @@ static NemoStatusPrompt *__Singleton__Prompt__ = nil;
 + (void)hide:(BOOL)animation completion:(void(^)(BOOL finished))completion{
     
     dispatch_async(dispatch_get_main_queue(), ^{
+        [[UIApplication sharedApplication] endIgnoringInteractionEvents];
         if (animation) {
             [UIView animateWithDuration:1.0
                                   delay:0.0
@@ -219,7 +234,8 @@ static NemoStatusPrompt *__Singleton__Prompt__ = nil;
 }
 
 + (void)hide{
-
+    
+    
     _statusBackgroundView.frame = CGRectMake(0, -STATUS_SIZE.height, STATUS_SIZE.width, STATUS_SIZE.height);
     _statusBackgroundView.hidden = YES;
     _titleLabel.hidden = NO;
@@ -237,6 +253,8 @@ static NemoStatusPrompt *__Singleton__Prompt__ = nil;
 - (void)delayHide{
     
     dispatch_async(dispatch_get_main_queue(), ^{
+        [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+        
         [[NemoStatusPrompt getKeyWindow] setWindowLevel:UIWindowLevelNormal];
         [UIView animateWithDuration:1.0
                               delay:0.
@@ -244,6 +262,7 @@ static NemoStatusPrompt *__Singleton__Prompt__ = nil;
                                 _statusBackgroundView.frame = CGRectMake(0, -STATUS_SIZE.height, STATUS_SIZE.width, STATUS_SIZE.height);
                             }
                          completion:^(BOOL finished) {
+
                          }];
     });
     

@@ -23,7 +23,9 @@
     [self.waring addTarget:self action:@selector(waringMehtod) forControlEvents:UIControlEventTouchUpInside];
 
     [self.custom addTarget:self action:@selector(customMehtod) forControlEvents:UIControlEventTouchUpInside];
-
+    
+    //开启动画显示过程中，app不响应触摸事件
+    [NemoStatusPrompt userInteractionEnabledDuringAnimation:NO];
 }
 
 - (void)didReceiveMemoryWarning {

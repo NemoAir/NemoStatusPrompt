@@ -78,6 +78,11 @@
 
 + (void)hide:(BOOL)animation completion:(void(^)(BOOL finished))completion;
 
+/**
+ *  动画执行过程中，是否能够接受触摸事件，全局设置，默认可以接受触摸事件.只对显示动画有效，隐藏动画不受影响
+ *
+ */
++ (void)userInteractionEnabledDuringAnimation:(BOOL)enable;
 
 /**
  *  Tint是否正在显示
