@@ -157,7 +157,7 @@ static NemoStatusPrompt *__Singleton__Prompt__ = nil;
     if (animation) {
         [UIView animateWithDuration:1.0
                               delay:0.0
-                            options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionOverrideInheritedDuration | UIViewAnimationOptionOverrideInheritedCurve
+                            options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionOverrideInheritedDuration | UIViewAnimationOptionOverrideInheritedCurve | UIViewAnimationOptionBeginFromCurrentState
                          animations:^{
                                 _statusBackgroundView.frame = CGRectMake(0, 0, STATUS_SIZE.width, STATUS_SIZE.height);
                             }
