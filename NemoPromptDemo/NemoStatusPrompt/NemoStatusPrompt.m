@@ -28,8 +28,7 @@ static NemoStatusPrompt *__Singleton__Prompt__ = nil;
 @implementation NemoStatusPrompt
 
 + (void)initialize
-{  ;
-
+{
     if (self == [NemoStatusPrompt class]) {
         static dispatch_once_t onceToken;
         dispatch_once(&onceToken, ^{
