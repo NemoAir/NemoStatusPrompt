@@ -269,7 +269,7 @@ static NemoStatusPrompt *__Singleton__Prompt__ = nil;
 }
 
 + (UIWindow *)getKeyWindow{
-    return [UIApplication sharedApplication].delegate.window;
+    return [UIApplication sharedApplication].keyWindow;
 }
 
 @end
